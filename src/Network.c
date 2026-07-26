@@ -148,6 +148,8 @@ void forward_pass(Network * network, png * image) {
         Layer * current = &network->layers[j]; 
         Layer * next = &network->layers[j + 1]; 
 
+        int is_output_layer = (j == network->num_layers - 2); 
+
         // cacluate the z value = SUM (inputs x weights) + bias
         for (int k = 0; k < next->num_neurons; k++) {
 
@@ -160,9 +162,50 @@ void forward_pass(Network * network, png * image) {
                 z += (current->neurons[h].activation * current->weights[k][h]); 
             }
 
-            // ReLU() function call & save z to k.z so it is not 0
             next->neurons[k].z = z; 
-            next->neurons[k].activation = compute_ReLU(next->neurons[k].z); 
+
+            // hidden layers -> perform ReLU activation function output layer -> softmax function 
+            if (!is_output_layer) {
+
+                next->neurons[k].activation = compute_ReLU(next->neurons[k].z); 
+            }
+        }
+
+        // now perform the softmax for every z value in the layor at once aka after the ReLU compute function 
+        if (is_output_layer) {
+
+            // start by assuming neuron [0] -> z value is the biggest, then check the rest...
+            float max_z = next->neurons[0].z; 
+
+            // this loop goes through the remaining neurons in the output layer 
+            // starts at 1 because we already assumed 0 is the biggest value 
+            for (int k = 1; k < next->num_neurons; k++) {
+                
+                // if the next-> neuron has a greater z value then use that one 
+                if (next->neurons[k].z > max_z) {
+
+                    max_z = next->neurons[k].z; 
+                }
+            }
+
+            // the greatest z value should be found now... 
+            // now we need to figure out the sum_exp. Which is the demonator
+            float sum_exp = 0.0f;
+            
+            // loop through every neuron, and each neuron adds to the sum 
+            for (int k = 0; k < next->num_neurons; k++) {
+
+                // sum of the exp all added up together 
+                sum_exp += expf(next->neurons[k].z - max_z); 
+            }
+
+            // now go back through every output neuron and compute the softmax function 
+            // variables required are: max_z and sum_exp 
+            for (int k = 0; k < next->num_neurons; k++) {
+
+                // softmax function 
+                next->neurons[k].activation = expf(next->neurons[k].z - max_z) / sum_exp; 
+            }
         }
     }
 }
