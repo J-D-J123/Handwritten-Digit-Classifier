@@ -283,9 +283,25 @@ void update_parameters(Network * network, double learning_rate) {
 
 }
 
+/**
+ * Binary Cross Entropy loss with softmax
+ */
 double compute_loss(Network * network, int label) {
 
+    // ALWAYS A GIVEN FACT, using cross-entropy
+    // H(P, Q) >= H(P)
 
+    // Cross-Entropy is defined as 
+    // H(P, Q) = - SUM p(i) log (q(i))
+    // 
+    // Where P is the "One-hot" value aka 1 and 
+    // where i is the index of the element and 
+    // Q(i) is the index/ activation of the neuron
+
+    // steps to compute loss 
+    // 1 refrence output layer
+    // 2 get the activiaton value at that specific neuron 
+    // 3 caculate the cross entropy 
 }
 
 
