@@ -73,3 +73,19 @@ https://www.youtube.com/watch?v=Ilg3gGewQ5U
 https://www.youtube.com/watch?v=SmZmBKc7Lrs
 Claude reviewed the code and told me to touch up the forward_pass function
 
+07/28/2026
+https://www.datacamp.com/tutorial/loss-function-in-machine-learning
+https://www.youtube.com/watch?v=KHVR587oW8I
+https://www.youtube.com/watch?v=ErfnhcEV1O8
+https://arxiv.org/pdf/1701.07232
+https://math.libretexts.org/Bookshelves/Calculus/Calculus_3e_(Apex)/01%3A_Limits/1.02%3A_Epsilon-Delta_Definition_of_a_Limit
+https://en.wikipedia.org/wiki/Sigmoid_function
+https://en.wikipedia.org/wiki/Cross-entropy
+https://machinelearningmastery.com/cross-entropy-for-machine-learning/
+https://tex.stackexchange.com/questions/238179/epsilon-and-log-functions
+https://gregorygundersen.com/blog/2020/02/09/log-sum-exp/
+https://en.wikipedia.org/wiki/LogSumExp
+https://arxiv.org/pdf/1701.07232
+Argued with Claude and I was right
+https://tex.stackexchange.com/questions/238179/epsilon-and-log-functions
+https://en.wikipedia.org/wiki/Real_coordinate_space
