@@ -9,10 +9,15 @@ This project has brought together what I have learned in class from writing comm
 This project is using the MNIST dataset to develop and train a neural network with little to no help from any AI model/ agent. This is to help teach the foundations of neural networks in a challenging language aka C. 
 
 ## How it Works
+
+Each image is handwritten from a MNIST dataset of lots of images 28 * 28 images that is. 
+
+![Source IMG](https://github.com/J-D-J123/number-neural-network/blob/main/0_1.png)
+
 Each PNG image is a 28 * 28 image transformed to a greyscale pixel array with 784 total pixels per PNG. 
 
 Input layer has 784 neurons (per pixel)
 Middle has two seperate layers first one is 256 -> 128 
 Output is 10 (digits 1, 10)
 
-![Alternative text for accessibility](https://github.com/J-D-J123/number-neural-network/blob/main/greyscale_0-255.JPG)
+![INPUT NEURON DATA](https://github.com/J-D-J123/number-neural-network/blob/main/greyscale_0-255.JPG)
