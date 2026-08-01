@@ -1,0 +1,4 @@
+For more data flip & rotate images. 
+Train with sets not all at once. 
+
+refrenced: https://www.deeplearningbook.org/contents/autoencoders.html p.514

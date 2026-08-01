@@ -97,3 +97,8 @@ https://www.youtube.com/watch?v=12-HUfbyGso&t=469s
 https://www.youtube.com/watch?v=12-HUfbyGso&t=469s
 https://www.youtube.com/watch?v=IoM5zUI8oFc
 https://natureofcode.com/neural-networks/
+
+07/31/2026
+https://www.geeksforgeeks.org/deep-learning/loss-functions-in-deep-learning/
+https://docs.pytorch.org/docs/2.13/generated/torch.nn.BCELoss.html
+https://cs231n.github.io/neural-networks-1/

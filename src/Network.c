@@ -285,6 +285,18 @@ void update_parameters(Network * network, double learning_rate) {
 
 /**
  * Binary Cross Entropy loss with softmax
+ *  Used OpenAI ChatGPT & Gemini Flash to help me understand :(
+ *
+ *  Derivation: 
+ *  Loss = -log(Softmax(target))
+ *  Loss = -log(e^(zlabel) / sum(e^(zj)))
+ *  
+ *  Using log rules: log(A/B) = log(A) - log(B)
+ *  Loss = (log(sum(e^zj)) - zlabel)
+ * 
+ *  @param network the neural network data structure
+ *  @param label is the index of the correct class for the current training example Ex. label = 7
+ *  @returns double -> the computed losss after the cross entropy + softmax
  */
 double compute_loss(Network * network, int label) {
 
@@ -298,10 +310,24 @@ double compute_loss(Network * network, int label) {
     // where i is the index of the element and 
     // Q(i) is the index/ activation of the neuron
 
-    // steps to compute loss 
-    // 1 refrence output layer
-    // 2 get the activiaton value at that specific neuron 
-    // 3 caculate the cross entropy 
+    // first i need to reference the output layer 
+    int output_layer = network->num_layers - 1; 
+    int num_neurons = network->layers[output_layer].num_neurons; 
+
+    double sum_exp = 0.0; 
+
+    // Step 1: calculate the sum of exponentials, which is the demonator of the softmax
+    for (int i = 0; i < num_neurons; i++) {
+
+        // now loop through each neuron and get activation value + calcaluate cross entropy 
+        sum_exp += exp(network->layers[output_layer].neurons[i]); 
+    }
+
+    // step 2: get activation of the label neuron
+    double target_activation = network->layers[output_layer].neurons[label]; 
+
+    // now we have the values to caculate the cross-entropy loss function & Compute Loss
+    return log(sum_exp) - target_activation; 
 }
 
 
