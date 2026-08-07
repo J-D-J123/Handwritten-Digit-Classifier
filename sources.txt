@@ -105,3 +105,9 @@ https://cs231n.github.io/neural-networks-1/
 
 08/06/2026
 Code review with Claude Sonnet 5
+https://aiwiki.ai/wiki/parameter_update
+https://www.geeksforgeeks.org/deep-learning/understanding-torchnnparameter/
+https://stackoverflow.com/questions/49446785/how-can-i-update-the-parameters-of-a-neural-network-in-pytorch
+https://shikisaji.github.io/deep-learning-specialization-andrew-ng/C2-Improving-Deep-Neural-Networks/
+https://www.coursera.org/articles/neural-network-parameters/
+https://en.wikipedia.org/wiki/Learning_rate

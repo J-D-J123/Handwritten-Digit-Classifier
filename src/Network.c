@@ -278,9 +278,49 @@ void backpropagation(Network * network, int label) {
     }
 }
 
+/**
+* update_parameters(Network * network, double learning_rate) applies gradient desecent to every 
+*   weight and bias in the network. This helps reduce the amount of "loss" the network encounters
+*
+* @param network is the neural network after a forward pass and backpropagation have occured
+* @param learning_rate is the step size scalar on how much each weight & bias changes per update
+*/
 void update_parameters(Network * network, double learning_rate) {
 
+    // update two things ->
+    // every weight in layers[i].weights[j][k] & every neuron's bias
 
+    int layer_count = network->num_layers;
+
+
+    // Loop through all layers excluding layer 0 (input layer) 
+    for (int i = 1; i < layer_count; i++) {
+
+        Layer * current = &network->layers[i - 1]; 
+        Layer * next = &network->layers[i]; 
+
+        // first update biases -> update each neuron in next layer 
+        for (int k = 0; k < next->num_neurons; k++) {
+
+            next->neurons[k].bias -= learning_rate * next->neurons[k].delta; 
+        }
+
+        // next update the weight(s)
+        // now loop through num of neurons in layer i aka the current layer 
+        for (int j = 0; j < current->num_neurons; j++) {
+
+            // go through the next layer h
+            for (int h = 0; h < next->num_neurons; h++) {
+
+                // update each neuron's weight here.... please work :)
+                // h = next layer neuron 
+                // j = current layer neuron 
+                // where current->weight = learning_rate * gradient 
+                // where gradient = next-neurons[h].delta * current->neurons[j].activation
+                current->weights[h][j] -= learning_rate * (next->neurons[h].delta * current->neurons[j].activation); 
+            }
+        }
+    }
 }
 
 /**
@@ -393,4 +433,4 @@ double compute_softplus(double num) {
 // double compute_sigmoid(double num) {
 
 //     return (1.0 / (1.0 + exp(-num)));
-// }
+// } // end of Network.c

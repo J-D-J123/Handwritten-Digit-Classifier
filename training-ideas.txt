@@ -2,3 +2,18 @@ For more data flip & rotate images.
 Train with sets not all at once. 
 
 refrenced: https://www.deeplearningbook.org/contents/autoencoders.html p.514
+
+Dropout??? -> a3 = a3/ keep_prob, ensures that the expected value of a3 remains the same, 
+    which makes test time easier becuase you have less of a scaling problem????***
+
+    "Cannot rely on any one feature, so have to spread out weights, which has an 
+    effect of shrinking the squared norm of the weight, helps prevent overfitting" 
+
+    Question: 
+    - Would this decrease the size/ training speeds???? 
+
+Learning rate -> "Start with a common value: Try a default like 0.01 or 0.001" 
+Monitor the loss: observe the training loss curve 
+Iterate: Repeat the process until you find a learning rate that provides stable and reasonable fast convergence
+
+Then adjust the learning rate during training. 

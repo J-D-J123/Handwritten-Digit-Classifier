@@ -17,11 +17,11 @@
 
 typedef struct Neuron {
 
-    float activation; 
-    float bias; 
+    float activation;   // the value the neuron sends to the next layers -> how active it is
+    float bias;     // constant added to the weighted sum before activation  
 
-    float z; 
-    float delta; 
+    float z;        // pre-activation
+    float delta;    // how much did input equal the error
 
 } Neuron; 
 
