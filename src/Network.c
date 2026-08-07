@@ -320,11 +320,11 @@ double compute_loss(Network * network, int label) {
     for (int i = 0; i < num_neurons; i++) {
 
         // now loop through each neuron and get activation value + calcaluate cross entropy 
-        sum_exp += exp(network->layers[output_layer].neurons[i]); 
+        sum_exp += exp(network->layers[output_layer].neurons[i].z); 
     }
 
     // step 2: get activation of the label neuron
-    double target_activation = network->layers[output_layer].neurons[label]; 
+    double target_activation = network->layers[output_layer].neurons[label].z; 
 
     // now we have the values to caculate the cross-entropy loss function & Compute Loss
     return log(sum_exp) - target_activation; 
