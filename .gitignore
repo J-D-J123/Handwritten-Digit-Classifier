@@ -4,3 +4,7 @@
 /mnist_data/
 /png_images/
 /tests/
+
+# ignore gcc compiler & exe(s)
+gcc/
+*.exe

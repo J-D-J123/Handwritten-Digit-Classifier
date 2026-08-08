@@ -39,12 +39,13 @@ Network setup_network(int * neurons_per_layer, int num_of_layers) {
 
             // set them all to 0; 
             network.layers[i].neurons[j].activation = 0.0f; 
-            network.layers[i].neurons[j].bias = 0.0f; 
+            network.layers[i].neurons[j].z = 0.0f; 
+            network.layers[i].neurons[j].delta = 0.0f; 
+
+            // random biase value 
+            network.layers[i].neurons[j].bias = ((float) rand() / RAND_MAX) * 2.0f - 1.0f; 
         }
     }
-
-    // create the connections now from each neuron
-    int connection_index = 0; 
 
     // count when each pair gets connected (do not do the last layer) 
     // loops through each layer aka total num of layers
@@ -55,27 +56,34 @@ Network setup_network(int * neurons_per_layer, int num_of_layers) {
         Layer * current = &network.layers[i]; 
         Layer * next = &network.layers[i + 1]; 
 
+        current->weights = malloc(sizeof(float *) * next->num_neurons); 
+
         // go through every neruon in the current layer 
         // each neuron needs to connect to each neuron in the next layer
-        for (int j = 0; j < current->num_neurons; j++) {
+        for (int j = 0; j < next->num_neurons; j++) {
+
+            current->weights[j] = malloc(sizeof(float) * current->num_neurons); 
 
             // connects with the next layer via a loop 
             // go through each neuron in the next layer
             // fully creates a "Road" where each neuron truly points to each other
-            for (int k = 0; k < next->num_neurons; k++) {
+            for (int k = 0; k < current->num_neurons; k++) {
 
                 // input layer neuron connects to middle layer neuron 
-                network.connections[connection_index].previous = &current->neurons[j]; 
+                // network.connections[connection_index].previous = &current->neurons[j]; 
 
-                // middle layer neuron connects to input layer neuron
-                network.connections[connection_index].next = &current->neurons[k]; 
+                // // middle layer neuron connects to input layer neuron
+                // network.connections[connection_index].next = &current->neurons[k]; 
 
-                // initialize the weights randomly and not just 0.0f of each Connection
-                // network.connections[connection_index].weight = 0.0f; 
-                // generate weight with value from [-1.0, 1.0]
-                network.connections[connection_index].weight = ((float) rand() / RAND_MAX) * 2.0f - 1.0f; 
+                // // initialize the weights randomly and not just 0.0f of each Connection
+                // // network.connections[connection_index].weight = 0.0f; 
+                // // generate weight with value from [-1.0, 1.0]
+                // network.connections[connection_index].weight = ((float) rand() / RAND_MAX) * 2.0f - 1.0f; 
 
-                connection_index++; 
+                // connection_index++; 
+
+                // assign random weight from [-1.0, 1.0] inclusive
+                current->weights[j][k] = ((float) rand()/ RAND_MAX) * 2.0f - 1.0f; 
             }
         }
     }
@@ -84,15 +92,17 @@ Network setup_network(int * neurons_per_layer, int num_of_layers) {
 }
 
 /**
- * this forward_backpropagation_algorithm(...) is the method for the network to learn 
+ * train_network(Network network, png * input_pngs, int num_of_pngs, double learning_rate) 
+ *  is the function to call certian methods used to train and test the network. 
  * 
  * @param network is the set up connected network from the function setup_network(...)
  * @param input_pngs is an array of input images used to train the network for multiple images 
+ * @param learning_rate is the rate at which the network decreases it's loss
  * @returns network which is the modified network after the new "training"
  */
-Network train_network(Network network, png * input_pngs, int num_of_pngs) { 
+Network train_network(Network network, png * input_pngs, int num_of_pngs, double learning_rate) { 
 
-    // Learning alorithm... TODO; 
+    // Learning alorithm..
     /**
      *  Forward pass, compute activations layer by layer by adjusting the biases
      * 
@@ -105,8 +115,30 @@ Network train_network(Network network, png * input_pngs, int num_of_pngs) {
      *  Adam is a fancier optimizer i can add later. nudge every weight/bias in the direction that reduces loss. 
      */
 
+    // first step is to loop through all the set of images 
+    for (int i = 0; i < num_of_pngs; i++) {
+
+        forward_pass(&network, &input_pngs[i]); 
+
+        // now we need to compute the loss via softmax aka backpropagation 
+        // takes in a refrence to Network and then the correct label of said image or "input_png[i]"
+        backpropagation(&network, input_pngs[i].label);
+
+        // finally we can do some grad or del descent :) & update params while we are at it
+        update_parameters(&network, learning_rate);
+    }
+
+    // returned the hopefully trained network (I hope this works)
+    return network; 
 }
 
+/**
+ * forward_pass(Network * network, png * iamge) takes in the network goes through each neuron 
+ *  and computes the variable z and the activation function f(z) and stores it into the neuron directly
+ * 
+ * @param network just the old hand-dandy ENTIRE NEURAL NETWORK :) I'm tired
+ * @param image is the input image inputed into the input layer neuorns
+ */
 void forward_pass(Network * network, png * image) {
 
     // each neuron (z)
@@ -116,24 +148,243 @@ void forward_pass(Network * network, png * image) {
     // activation is just a sum of all the neurons to the next layer aka 
     // if the sum = 0.56
     // sigmoid(0.56) = 0.636
+    
+    // load image into input layer 
+    Layer * input = &network->layers[0];
 
+    // input PNG pixels into the input layer
+    for (int i = 0; i < input->num_neurons; i++) {
 
+        // neuron activation = pixels array 
+        input->neurons[i].activation = image->pixels[i].grey / 255.0f;  
+    }
 
+    // now go through all calcuations for each layer including the input layer
+    for (int j = 0; j < network->num_layers - 1; j++) {
+
+        Layer * current = &network->layers[j]; 
+        Layer * next = &network->layers[j + 1]; 
+
+        int is_output_layer = (j == network->num_layers - 2); 
+
+        // cacluate the z value = SUM (inputs x weights) + bias
+        for (int k = 0; k < next->num_neurons; k++) {
+
+            float z = next->neurons[k].bias; 
+
+            // loop through the current layer 
+            for(int h = 0; h < current->num_neurons; h++) {
+
+                // SUM (inputs x weights) + bias (aka z)
+                z += (current->neurons[h].activation * current->weights[k][h]); 
+            }
+
+            next->neurons[k].z = z; 
+
+            // hidden layers -> perform ReLU activation function output layer -> softmax function 
+            if (!is_output_layer) {
+
+                next->neurons[k].activation = compute_ReLU(next->neurons[k].z); 
+            }
+        }
+
+        // now perform the softmax for every z value in the layor at once aka after the ReLU compute function 
+        if (is_output_layer) {
+
+            // start by assuming neuron [0] -> z value is the biggest, then check the rest...
+            float max_z = next->neurons[0].z; 
+
+            // this loop goes through the remaining neurons in the output layer 
+            // starts at 1 because we already assumed 0 is the biggest value 
+            for (int k = 1; k < next->num_neurons; k++) {
+                
+                // if the next-> neuron has a greater z value then use that one 
+                if (next->neurons[k].z > max_z) {
+
+                    max_z = next->neurons[k].z; 
+                }
+            }
+
+            // the greatest z value should be found now... 
+            // now we need to figure out the sum_exp. Which is the demonator
+            float sum_exp = 0.0f;
+            
+            // loop through every neuron, and each neuron adds to the sum 
+            for (int k = 0; k < next->num_neurons; k++) {
+
+                // sum of the exp all added up together 
+                sum_exp += expf(next->neurons[k].z - max_z); 
+            }
+
+            // now go back through every output neuron and compute the softmax function 
+            // variables required are: max_z and sum_exp 
+            for (int k = 0; k < next->num_neurons; k++) {
+
+                // softmax function 
+                next->neurons[k].activation = expf(next->neurons[k].z - max_z) / sum_exp; 
+            }
+        }
+    }
 }
 
+/**
+ * backpropagation(Network * network, int label) computes the delta for every neuron in the network. 
+ *  delta stands for the amount of error. This algorithm starts backward from the output layer and then 
+ *  goes through the hidden layers. 
+ * 
+ * @param network is the neural network inputed and computed. After a forward pass the activation functions 
+ *                      and z values are stored in each neuron 
+ * @param label is the correct digit for the image [0.9] inclusive. Represents the output neuron and the correct number to be activated. 
+ *                      aka which neuron on the output layer.
+ */
 void backpropagation(Network * network, int label) {
 
+    // index of output layer 
+    // annoying index error since the setup_network takes the actual amount of 
+    //  number of layers (Ex. 4 = 4 layers) you need to subtract 1 to 
+    //  correctly index the layers backwards
+    int num_layers = network->num_layers; 
+    int output_layer_index = network->num_layers - 1;
 
+    // loop over every neuron in the output layer
+    int num_of_neurons = network->layers[output_layer_index].num_neurons;
+
+    for (int i = 0; i < num_of_neurons; i++) {
+
+        // figure out the "target" value
+        // Ex. if 1.0 if i == label else 0.0 
+        double target; 
+
+        //  One Hot Encoding in Backpropagation where 1 value is the answer 
+        //  since all answers are from [1, 10] inclusive it is easier to have the "One Hot" approach
+        if (i == label) {
+
+            target = 1.0; 
+
+        } else {
+
+            target = 0.0; 
+        }
+
+        // caculate delta, which is the difference between the expected value vs the guessed value via the network 
+        network->layers[output_layer_index].neurons[i].delta = network->layers[output_layer_index].neurons[i].activation - target; 
+    }
+
+    for (int n = num_layers - 2; n > 0; n--) { // n is which layer 
+
+        // get a pointer to current layer i and then the next layer 
+        Layer * current_layer = &network->layers[n]; 
+        Layer * next_layer = &network->layers[n + 1]; // next layer
+
+        // now loop over every neuron in the current layer 
+        for (int current_neuron = 0; current_neuron < current_layer->num_neurons; current_neuron++) { 
+
+            // fresh sum value for each neuron caculation
+            double sum = 0.0; 
+
+            // loop through each neuron in the next layer
+            for (int next_neuron = 0; next_neuron < next_layer->num_neurons; next_neuron++) {
+
+                // sum every neuron k in the next layer
+                sum += next_layer->neurons[next_neuron].delta * current_layer->weights[next_neuron][current_neuron]; 
+            }
+
+            // now multiply the sum by compute_ReLU_derivative & store result in current layer neuron delta
+            current_layer->neurons[current_neuron].delta = sum * compute_ReLU_derivative(current_layer->neurons[current_neuron].z); 
+        }
+    }
 }
 
+/**
+* update_parameters(Network * network, double learning_rate) applies gradient desecent to every 
+*   weight and bias in the network. This helps reduce the amount of "loss" the network encounters
+*
+* @param network is the neural network after a forward pass and backpropagation have occured
+* @param learning_rate is the step size scalar on how much each weight & bias changes per update
+*/
 void update_parameters(Network * network, double learning_rate) {
 
+    // update two things ->
+    // every weight in layers[i].weights[j][k] & every neuron's bias
 
+    int layer_count = network->num_layers;
+
+
+    // Loop through all layers excluding layer 0 (input layer) 
+    for (int i = 1; i < layer_count; i++) {
+
+        Layer * current = &network->layers[i - 1]; 
+        Layer * next = &network->layers[i]; 
+
+        // first update biases -> update each neuron in next layer 
+        for (int k = 0; k < next->num_neurons; k++) {
+
+            next->neurons[k].bias -= learning_rate * next->neurons[k].delta; 
+        }
+
+        // next update the weight(s)
+        // now loop through num of neurons in layer i aka the current layer 
+        for (int j = 0; j < current->num_neurons; j++) {
+
+            // go through the next layer h
+            for (int h = 0; h < next->num_neurons; h++) {
+
+                // update each neuron's weight here.... please work :)
+                // h = next layer neuron 
+                // j = current layer neuron 
+                // where current->weight = learning_rate * gradient 
+                // where gradient = next-neurons[h].delta * current->neurons[j].activation
+                current->weights[h][j] -= learning_rate * (next->neurons[h].delta * current->neurons[j].activation); 
+            }
+        }
+    }
 }
 
+/**
+ * Binary Cross Entropy loss with softmax
+ *  Used OpenAI ChatGPT & Gemini Flash to help me understand :(
+ *
+ *  Derivation: 
+ *  Loss = -log(Softmax(target))
+ *  Loss = -log(e^(zlabel) / sum(e^(zj)))
+ *  
+ *  Using log rules: log(A/B) = log(A) - log(B)
+ *  Loss = (log(sum(e^zj)) - zlabel)
+ * 
+ *  @param network the neural network data structure
+ *  @param label is the index of the correct class for the current training example Ex. label = 7
+ *  @returns double -> the computed losss after the cross entropy + softmax
+ */
 double compute_loss(Network * network, int label) {
 
+    // ALWAYS A GIVEN FACT, using cross-entropy
+    // H(P, Q) >= H(P)
 
+    // Cross-Entropy is defined as 
+    // H(P, Q) = - SUM p(i) log (q(i))
+    // 
+    // Where P is the "One-hot" value aka 1 and 
+    // where i is the index of the element and 
+    // Q(i) is the index/ activation of the neuron
+
+    // first i need to reference the output layer 
+    int output_layer = network->num_layers - 1; 
+    int num_neurons = network->layers[output_layer].num_neurons; 
+
+    double sum_exp = 0.0; 
+
+    // Step 1: calculate the sum of exponentials, which is the demonator of the softmax
+    for (int i = 0; i < num_neurons; i++) {
+
+        // now loop through each neuron and get activation value + calcaluate cross entropy 
+        sum_exp += exp(network->layers[output_layer].neurons[i].z); 
+    }
+
+    // step 2: get activation of the label neuron
+    double target_activation = network->layers[output_layer].neurons[label].z; 
+
+    // now we have the values to caculate the cross-entropy loss function & Compute Loss
+    return log(sum_exp) - target_activation; 
 }
 
 
@@ -165,6 +416,7 @@ double compute_ReLU(double num) {
  */
 double compute_ReLU_derivative(double num) {
 
+    // 1 for num greater than 0 and 0 when num is less than 0
     if (num > 0) {
 
         return 1.0; 
@@ -198,4 +450,4 @@ double compute_softplus(double num) {
 // double compute_sigmoid(double num) {
 
 //     return (1.0 / (1.0 + exp(-num)));
-// }
+// } // end of Network.c

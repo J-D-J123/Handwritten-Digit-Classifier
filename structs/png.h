@@ -1,16 +1,7 @@
-#ifndef PNG_STRUCTS_H
-#define PNG_STRUCTS_H
+#ifndef PNG_H
+#define PNG_H
 
 #include <stdint.h>
-
-// picture data for each picture inputed into the network 
-typedef struct _png {
-
-    uint32_t width; 
-    uint32_t height; 
-
-    uint32_t num_of_pixels; 
-} png; 
 
 // Per pixel greyscale values [0-255] inclusive
 typedef struct _PixelGrey {
@@ -18,6 +9,19 @@ typedef struct _PixelGrey {
     uint8_t grey; 
 
 } PixelGrey; 
+
+// picture data for each picture inputed into the network 
+typedef struct _png {
+
+    uint32_t width; 
+    uint32_t height; 
+    uint32_t num_of_pixels;
+
+    int label; 
+    
+    PixelGrey * pixels; 
+
+} png; 
 
 // ------------ FUNCTIONS -----------------
 png get_png_info(const char * inputPNG);

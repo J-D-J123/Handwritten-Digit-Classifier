@@ -1,6 +1,6 @@
 /**
  * Author:          Joseph Johnson 
- * File:            connection.h 
+ * File:            network.h 
  * Des:             connects each neuron with the next layer 
  *                  also called the "Weight" of the connection used for reinforcement learning 
  */
@@ -17,8 +17,11 @@
 
 typedef struct Neuron {
 
-    float activation; 
-    float bias; 
+    float activation;   // the value the neuron sends to the next layers -> how active it is
+    float bias;     // constant added to the weighted sum before activation  
+
+    float z;        // pre-activation
+    float delta;    // how much did input equal the error
 
 } Neuron; 
 
@@ -27,22 +30,19 @@ typedef struct Layer {
     int num_neurons; 
     Neuron * neurons; 
 
+    // matrix of weights per layer to next 
+    // [0.5, 0.2, 0.1] hidden layer 1
+    // [0.2, 0.4, 0.7] hidden layer 2
+    // and so on...
+    float ** weights; 
+
 } Layer; 
-
-typedef struct Connection {
-
-    float weight; 
-
-    Neuron * previous; 
-    Neuron * next;   
-
-} Connection; 
 
 typedef struct Network {
 
     int num_layers; 
+
     Layer * layers; 
-    Connection * connections; 
 
 } Network; 
 
@@ -50,7 +50,7 @@ typedef struct Network {
 Network setup_network(int * neurons_per_layer, int num_of_layers); 
 
 // training the network...
-Network train_network(Network network, png * input_pngs, int num_of_pngs);
+Network train_network(Network network, png * input_pngs, int num_of_pngs, double learning_rate);
 void forward_pass(Network * network, png * image);
 void backpropagation(Network * network, int label);
 void update_parameters(Network * network, double learning_rate); 
