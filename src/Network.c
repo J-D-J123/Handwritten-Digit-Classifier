@@ -92,15 +92,17 @@ Network setup_network(int * neurons_per_layer, int num_of_layers) {
 }
 
 /**
- * this forward_backpropagation_algorithm(...) is the method for the network to learn 
+ * train_network(Network network, png * input_pngs, int num_of_pngs, double learning_rate) 
+ *  is the function to call certian methods used to train and test the network. 
  * 
  * @param network is the set up connected network from the function setup_network(...)
  * @param input_pngs is an array of input images used to train the network for multiple images 
+ * @param learning_rate is the rate at which the network decreases it's loss
  * @returns network which is the modified network after the new "training"
  */
-Network train_network(Network network, png * input_pngs, int num_of_pngs) { 
+Network train_network(Network network, png * input_pngs, int num_of_pngs, double learning_rate) { 
 
-    // Learning alorithm... TODO; 
+    // Learning alorithm..
     /**
      *  Forward pass, compute activations layer by layer by adjusting the biases
      * 
@@ -113,6 +115,21 @@ Network train_network(Network network, png * input_pngs, int num_of_pngs) {
      *  Adam is a fancier optimizer i can add later. nudge every weight/bias in the direction that reduces loss. 
      */
 
+    // first step is to loop through all the set of images 
+    for (int i = 0; i < num_of_pngs; i++) {
+
+        forward_pass(&network, &input_pngs[i]); 
+
+        // now we need to compute the loss via softmax aka backpropagation 
+        // takes in a refrence to Network and then the correct label of said image or "input_png[i]"
+        backpropagation(&network, input_pngs[i].label);
+
+        // finally we can do some grad or del descent :) & update params while we are at it
+        update_parameters(&network, learning_rate);
+    }
+
+    // returned the hopefully trained network (I hope this works)
+    return network; 
 }
 
 /**

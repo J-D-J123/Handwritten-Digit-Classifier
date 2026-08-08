@@ -50,7 +50,7 @@ typedef struct Network {
 Network setup_network(int * neurons_per_layer, int num_of_layers); 
 
 // training the network...
-Network train_network(Network network, png * input_pngs, int num_of_pngs);
+Network train_network(Network network, png * input_pngs, int num_of_pngs, double learning_rate);
 void forward_pass(Network * network, png * image);
 void backpropagation(Network * network, int label);
 void update_parameters(Network * network, double learning_rate); 
