@@ -42,4 +42,3 @@ The training happens in four stages:
 
 ## Next Steps... 
 In the [article](https://www.lyzr.ai/glossaries/batch-size/) they used 10,000 images, with a batch size of 32. Given the massive MNIST dataset (60,000 PNGs) I doubled it by 6. This means that per batch size will consist of 192 random PNGs [0-9] and will total about 312 total batches. 
-
