@@ -121,3 +121,4 @@ https://www.tutorialkart.com/c-programming/how-to-list-files-within-a-directory-
 https://www.man7.org/linux/man-pages/man0/dirent.h.0p.html/
 https://www.geeksforgeeks.org/deep-learning/batch-size-in-neural-network/
 https://www.toolify.ai/ai-news/mastering-batch-size-in-deep-learning-training-961507/
+https://stackoverflow.com/questions/41345160/display-link-url-in-markdown/

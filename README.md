@@ -28,7 +28,7 @@ This array will be used for my 784 neuron input layer into the network.
 
 ![INPUT NEURON DATA](img/Kc50L.jpg)
 
-### Training
+## Training
 The training happens in four stages: 
 
 1. **Forward Pass** takes the 784 greyscale pixel array divides it by 255. Then computes each neuron's weighted sum plus bias (z) layer by layer. ReLU is used layer by layer as the activation function. Finally, it applies a softmax distribution over the 10 digits. 
@@ -38,3 +38,8 @@ The training happens in four stages:
 3. **Backpropagation** goes backwards from the output and computes the loss. Comparing the correct value to the predicted output by computing how much each neruon contributed to that error. This changes the delta value that lives within the Neuron struct. 
 
 4. **Gradient Descent** changes every weight and bias slightly in the direction that reduces the loss. The learning rate parameter determines how big each step is. 
+
+
+## Next Steps... 
+In the [article](https://www.lyzr.ai/glossaries/batch-size/) they used 10,000 images, with a batch size of 32. Given the massive MNIST dataset (60,000 PNGs) I doubled it by 6. This means that per batch size will consist of 192 random PNGs [0-9] and will total about 312 total batches. 
+
