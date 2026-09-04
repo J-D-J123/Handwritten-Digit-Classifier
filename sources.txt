@@ -111,3 +111,13 @@ https://stackoverflow.com/questions/49446785/how-can-i-update-the-parameters-of-
 https://shikisaji.github.io/deep-learning-specialization-andrew-ng/C2-Improving-Deep-Neural-Networks/
 https://www.coursera.org/articles/neural-network-parameters/
 https://en.wikipedia.org/wiki/Learning_rate
+
+09/04/2026
+https://stackoverflow.com/questions/2060974/how-to-include-a-dynamic-array-inside-a-struct-in-c/
+https://stackoverflow.com/questions/55713807/methods-to-iterate-every-file-in-a-directory/
+https://stackoverflow.com/questions/14824563/struct-inside-of-same-struct-type/
+https://www.baeldung.com/linux/list-files-using-c/
+https://www.tutorialkart.com/c-programming/how-to-list-files-within-a-directory-using-c/
+https://www.man7.org/linux/man-pages/man0/dirent.h.0p.html/
+https://www.geeksforgeeks.org/deep-learning/batch-size-in-neural-network/
+https://www.toolify.ai/ai-news/mastering-batch-size-in-deep-learning-training-961507/

@@ -1,10 +1,16 @@
-
-
-# data ignore
-/mnist_data/
-/png_images/
+# Data directories
+/AI/mnist_data/
+/AI/png_images/
 /tests/
 
-# ignore gcc compiler & exe(s)
-gcc/
+# Compiler/build output
+/src/load_images
+/src/*.o
 *.exe
+*.out
+
+# Valgrind core dumps
+vgcore.*
+
+# Optional: ignore all executables named load_images anywhere
+# **/load_images

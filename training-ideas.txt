@@ -17,3 +17,19 @@ Monitor the loss: observe the training loss curve
 Iterate: Repeat the process until you find a learning rate that provides stable and reasonable fast convergence
 
 Then adjust the learning rate during training. 
+
+
+Dynamic Batch Size****>????????????? (LOOK) Modern Technique*** 
+vs. Adaptive Batch Size -> Adam or AdaGrad 
+
+https://www.lyzr.ai/glossaries/batch-size/ 
+This says Small batch sizes e.g. 8 16 32 is best so the model does 
+not learn ever single feature or overfit. 
+
+so if you have a set of 10000 images with a 32 training batch 
+10000/ 32 = 192 runs therefore, since the MINST dataset is about 
+6 times that we can then use 32 * 6 which is ~192 images per batch 
+then that is ~312 training interations which is the same as, 
+what the article said of 10000 dataset to the 32 batch size. 
+Just doubled times 6.
+
