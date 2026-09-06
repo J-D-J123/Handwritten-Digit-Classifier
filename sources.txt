@@ -123,3 +123,5 @@ https://www.geeksforgeeks.org/deep-learning/batch-size-in-neural-network/
 https://www.toolify.ai/ai-news/mastering-batch-size-in-deep-learning-training-961507/
 https://stackoverflow.com/questions/41345160/display-link-url-in-markdown/
 https://www.lyzr.ai/glossaries/batch-size/
+
+09/05/2026

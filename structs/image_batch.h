@@ -7,11 +7,23 @@ typedef struct _training_batch {
     // the pointer to the path 
     // what else???
 
+    // num of images per batch
     int num_of_images; 
+
+    // the paths of said images in order to train
     char ** image_paths; 
 
-    struct _training_batch * array_of_training_batches;  
+    // ground truth 
+    int * labels; 
 
 } training_batch; 
+
+// a struct of training_batches = dataset 
+typedef struct _training_dataset {
+
+    int num_batches; 
+    training_batch ** batches; 
+
+} training_dataset; 
 
 #endif

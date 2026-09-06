@@ -94,3 +94,24 @@ void enumerate_files(const char * path) {
     }
 }
 
+// figure out set of images based on the amount of images per set. 
+// select one through each set, so that you use every element of image
+/**
+* create_number_of_images_per_batch figures out the amount of images 
+*   needed per batch. 
+*
+*       required: 
+*               -   at least [0-9] per batch
+*               -   about 192 PNGs per batch (some may have less)
+*               -   about 312 total batches
+*
+*       Then generates each batch based of the img url, skips that img after it is used. 
+*
+* @param num_of_images_per_batch is an array that tells you the amount
+*   of PNGs per type [0] being zero [1] being 1 all the way to [9] being 9          
+* @returns an image_batchteger array of the base amount of images required per training batch
+*/
+training_dataset * create_training_dataset(int * num_of_images_per_batch) {
+
+
+}
